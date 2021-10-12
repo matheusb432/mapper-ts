@@ -1,0 +1,31 @@
+{
+  "name": "mapper-ts",
+  "version": "0.1.0",
+  "description": "A convention-based object mapper that utilizes TypeScript decorators to simplify the mapping of objects between themselves.",
+  "main": "index.ts",
+  "homepage": "https://github.com/matheusb432/mapper-ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matheusb432/mapper-ts.git"
+  },
+  "compilerOptions": {
+    "esModuleInterop": true
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mapper",
+    "automapper",
+    "typescript",
+    "ts"
+  ],
+  "author": "Matheus Almeida Bastos <matheusalmeidabastos@hotmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^16.10.4",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {}
+}
