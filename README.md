@@ -110,8 +110,8 @@ mappedC = CClass {
   prop1C: 'PROP 1A',
   prop2C: 20,
   propBClass: {
-    prop1A: 'PROP 1A in C',
-    prop2A: 20,
+    prop1B: 'PROP 1A in C',
+    prop2B: 20,
     unmappedProp1B: 20,
     unmappedProp2B: 'UNMAPPED 2B in C',
   },
