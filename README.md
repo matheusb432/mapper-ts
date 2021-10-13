@@ -1,8 +1,6 @@
 # mapper-ts
 
-- This package is essentially just a simple automapper where you can use decorators to map objects
-
-- At the moment I've only tested it on TypeScript files using node-ts and it works, also the files in /src should be enough for it to work on any TS project but I'm still looking into how to do that as a package for Angular/React projects.
+- This package is a simple automapper where you can use decorators to map objects.
 
 ## Installation
 
@@ -18,8 +16,8 @@ yarn add mapper-ts
 
 ```js
 
-# using import
-import { Mapper, AddMap } from 'mapper-ts';
+# importing modules
+import { Mapper, AddMap } from 'mapper-ts/lib-esm';
 ```
 
 ## Example

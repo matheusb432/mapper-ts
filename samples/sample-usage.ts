@@ -1,4 +1,4 @@
-import { Mapper, AddMap } from '../';
+import { Mapper, AddMap } from '../src';
 
 class AClass {
   @AddMap('prop1B')

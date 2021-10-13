@@ -38,3 +38,4 @@ function addPropertyMap(destination, key, sourceName) {
     }
     destination.constructor.propertyMap[key] = sourceName;
 }
+//# sourceMappingURL=add-map.js.map

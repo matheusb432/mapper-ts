@@ -2,9 +2,14 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "module": "es6",
     "target": "es5",
-    "allowJs": true
+    "allowJs": true,
+    "module": "commonjs",
+    "outDir": "lib",
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "declaration": true
   },
-  "files": ["src/index.ts"]
+  "files": ["src/index.ts"],
+  "exclude": ["samples"]
 }
