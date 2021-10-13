@@ -1,6 +1,5 @@
 /**
- * @class Mapper class functionally inspired in the .NET AutoMapper, should map an object and all it's children objects
- * that are properly decorated
+ * @class Mapper class that can be instantiated and return a mapped object using map() as long as it's properly decorated
  * @property {propertyMapping} -- data with all properties that need name mapping from source to destination
  * @property {entityMapping} -- data with all properties that need type mapping from source to destination
  * @property {destination} -- property that will have the source data mapped to it
@@ -12,7 +11,6 @@ export class Mapper<TDestination> {
   mappedKeys: string[] = [];
 
   constructor(type: new (...args: any[]) => TDestination) {
-    // constructor(type: any) {
     this.destination = new type();
     this.propertyMapping = this.destination.constructor.propertyMap;
     this.entityMapping = this.destination.constructor.entityMap;
@@ -36,8 +34,9 @@ export class Mapper<TDestination> {
   }
 
   mapKeys(source: { [x: string]: any }): void {
-    this.setMappedKeys(source);
-
+    if (this.propertyMapping != null) {
+      this.setMappedKeys(source);
+    }
     this.setUnmappedKeys(source);
   }
 
@@ -55,17 +54,22 @@ export class Mapper<TDestination> {
   }
 
   setUnmappedKeys(source: { [x: string]: any }): void {
-    Object.keys(source).forEach((key) => {
-      if (this.shouldSkipMappedKey(key)) {
-        return;
-      }
+    if (this.propertyMapping != null) {
+      Object.keys(source).forEach((key) => {
+        if (this.shouldSkipMappedKey(key)) {
+          return;
+        }
+        const destinationKeys = Object.keys(this.destination);
 
-      const destinationKeys = Object.keys(this.destination);
-
-      if (!destinationKeys.includes(key)) {
+        if (!destinationKeys.includes(key)) {
+          this.destination[key] = source[key];
+        }
+      });
+    } else {
+      Object.keys(source).forEach((key) => {
         this.destination[key] = source[key];
-      }
-    });
+      });
+    }
   }
 
   mapNestedObjects(): void {
@@ -90,7 +94,7 @@ export class Mapper<TDestination> {
   }
 
   isMappable(): boolean {
-    return this.propertyMapping != null;
+    return this.propertyMapping != null || this.entityMapping != null;
   }
 
   isEmptySource(source: { [x: string]: any }): boolean {

@@ -2,9 +2,7 @@
 
 - This package is essentially just a simple automapper where you can use decorators to map objects
 
-- At the moment I've only tested it on TypeScript files using node-ts files and it works, also the files in /src should be enough for it to work on any TS project but I'm still looking into how to do that as a package for Angular/React projects.
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+- At the moment I've only tested it on TypeScript files using node-ts and it works, also the files in /src should be enough for it to work on any TS project but I'm still looking into how to do that as a package for Angular/React projects.
 
 ## Installation
 
