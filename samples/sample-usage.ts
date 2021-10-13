@@ -37,6 +37,17 @@ class CClass {
   propBClass: BClass;
 
   constructor(prop1C?: string, prop2C?: number, propBClass?: BClass) {
+    // @AddMap() Equivalent without using decorators
+    /*
+    this.constructor.prototype.constructor.propertyMap = {
+      prop1A: 'prop1B',
+      prop2A: 'prop1B',
+    };
+
+    this.constructor.prototype.constructor.entityMap = {
+      propBClass: BClass,
+    };
+    */
     this.prop1C = prop1C;
     this.prop2C = prop2C;
     this.propBClass = propBClass;

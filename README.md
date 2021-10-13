@@ -20,7 +20,7 @@ yarn add mapper-ts
 import { Mapper, AddMap } from 'mapper-ts/lib-esm';
 ```
 
-## Example
+## Examples
 
 ### Mapping properties in a class
 
@@ -60,6 +60,19 @@ class CClass {
   propBClass: BClass;
 
   constructor(prop1C?: string, prop2C?: number, propBClass?: BClass) {
+    `# @AddMap() equivalent without using decorators`
+    /*
+    this.constructor.prototype.constructor.propertyMap = {
+      prop1A: 'prop1B',
+      prop2A: 'prop1B',
+      propBClass: 'anyPropName'
+    };
+
+    this.constructor.prototype.constructor.entityMap = {
+      propBClass: BClass,
+    };
+    */
+
     this.prop1C = prop1C;
     this.prop2C = prop2C;
     this.propBClass = propBClass;
