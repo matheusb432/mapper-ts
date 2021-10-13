@@ -1,12 +1,10 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "module": "es6",
     "target": "es5",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": false,
-    "skipLibCheck": true,
-    "experimentalDecorators": true,
-    "lib": ["es2018", "dom"]
-  }
+    "allowJs": true
+  },
+  "files": ["src/index.ts"]
 }
