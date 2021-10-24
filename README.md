@@ -2,22 +2,12 @@
 
 - This package is a simple automapper where you can use decorators to map objects.
 
-## Installation
-
-```js
-# using npm
-npm install mapper-ts
-
-# using yarn
-yarn add mapper-ts
-```
-
 ## Usage
 
 ```js
 
 # importing modules
-import { Mapper, AddMap } from 'mapper-ts/lib-esm';
+import { Mapper, AddMap, IgnoreMap } from 'mapper-ts/lib-esm';
 ```
 
 ## Examples
@@ -45,6 +35,8 @@ class BClass {
 ```
 
 ```js
+`# Any property name in @IgnoreMap() will be ignored from the source object if it exists in it`
+@IgnoreMap('ignoredObj', 'ignoredProp', 'nonexistantProp')
 class CClass {
   @AddMap('prop1A')
   prop1C: string;
@@ -60,19 +52,6 @@ class CClass {
   propBClass: BClass;
 
   constructor(prop1C?: string, prop2C?: number, propBClass?: BClass) {
-    `# @AddMap() equivalent without using decorators`
-    /*
-    this.constructor.prototype.constructor.propertyMap = {
-      prop1A: 'prop1B',
-      prop2A: 'prop1B',
-      propBClass: 'anyPropName'
-    };
-
-    this.constructor.prototype.constructor.entityMap = {
-      propBClass: BClass,
-    };
-    */
-
     this.prop1C = prop1C;
     this.prop2C = prop2C;
     this.propBClass = propBClass;
@@ -90,15 +69,29 @@ const mappedB = new Mapper(BClass).map({
   unmappedProp2B: 'UNMAPPED 2B',
 });
 
-const mappedC = new Mapper(CClass).map({
+const unmappedC = {
   prop1A: 'PROP 1A',
   prop2A: 20,
-  propBClass: { prop1A: 'PROP 1A in C', prop2A: 20 },
-});
+  propBBClass: {
+    prop1A: 'PROP 1A in C',
+    prop2A: 20,
+    unmappedProp1B: 20,
+    unmappedProp2B: 'UNMAPPED 2B in C',
+  },
+  ignoredObj: {
+    ignoredProp1: 'IGNORED PROP in obj',
+    ignoredProp2: 'IGNORED PROP in obj2',
+  },
+  ignoredProp: 'IGNORED PROP',
+};
+
+const mappedC = new Mapper(CClass).map(unmappedC);
 ```
 
 ```js
 # Results:
+mappedA = AClass { prop1A: 'PROP 1B', prop2A: 10 }
+
 mappedB = BClass {
   prop1B: 'PROP 1B',
   prop2B: 10,
@@ -109,11 +102,11 @@ mappedB = BClass {
 mappedC = CClass {
   prop1C: 'PROP 1A',
   prop2C: 20,
-  propBClass: {
+  propBClass: BClass {
     prop1B: 'PROP 1A in C',
     prop2B: 20,
     unmappedProp1B: 20,
-    unmappedProp2B: 'UNMAPPED 2B in C',
-  },
+    unmappedProp2B: 'UNMAPPED 2B in C'
+  }
 }
 ```

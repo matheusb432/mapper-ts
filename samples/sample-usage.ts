@@ -1,9 +1,9 @@
-import { Mapper, AddMap } from '../src';
+import { Mapper, AddMap, IgnoreMap } from '../src';
 
 class AClass {
   @AddMap('prop1B')
   prop1A: string;
-  @AddMap('prop1B')
+  @AddMap('prop2B')
   prop2A: number;
 
   constructor(prop1A: string, prop2A: number) {
@@ -27,43 +27,32 @@ class BClass {
   }
 }
 
+@IgnoreMap('ignoredObj', 'ignoredProp', 'nonexistantProp')
 class CClass {
   @AddMap('prop1A')
-  prop1C: string;
+  prop1C: string = undefined;
   @AddMap('prop2A')
-  prop2C: number;
+  prop2C: number = undefined;
 
   @AddMap(BClass)
   propBClass: BClass;
 
   constructor(prop1C?: string, prop2C?: number, propBClass?: BClass) {
-    // @AddMap() Equivalent without using decorators
-    /*
-    this.constructor.prototype.constructor.propertyMap = {
-      prop1A: 'prop1B',
-      prop2A: 'prop1B',
-    };
-
-    this.constructor.prototype.constructor.entityMap = {
-      propBClass: BClass,
-    };
-    */
     this.prop1C = prop1C;
     this.prop2C = prop2C;
     this.propBClass = propBClass;
   }
 }
 
-const mappedA = new Mapper(AClass).map({ prop1B: 'PROP 1B', prop2B: 10 });
+const unmappedA = { prop1B: 'PROP 1B', prop2B: 10 };
 
-const mappedB = new Mapper(BClass).map({
+const unmappedB = {
   prop1A: 'PROP 1B',
   prop2A: 10,
   unmappedProp1B: 20,
   unmappedProp2B: 'UNMAPPED 2B',
-});
-
-const mappedC = new Mapper(CClass).map({
+};
+const unmappedC = {
   prop1A: 'PROP 1A',
   prop2A: 20,
   propBClass: {
@@ -72,7 +61,16 @@ const mappedC = new Mapper(CClass).map({
     unmappedProp1B: 20,
     unmappedProp2B: 'UNMAPPED 2B in C',
   },
-});
+  ignoredObj: {
+    ignoredProp1: 'IGNORED PROP in obj',
+    ignoredProp2: 'IGNORED PROP in obj2',
+  },
+  ignoredProp: 'IGNORED PROP',
+};
+
+const mappedA = new Mapper(AClass).map(unmappedA);
+const mappedB = new Mapper(BClass).map(unmappedB);
+const mappedC = new Mapper(CClass).map(unmappedC);
 
 console.log(mappedA);
 console.log(mappedB);

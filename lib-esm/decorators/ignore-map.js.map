@@ -1,0 +1,1 @@
+{"version":3,"file":"ignore-map.js","sourceRoot":"","sources":["../../src/decorators/ignore-map.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,IAAI,EAAE,MAAM,uBAAuB,CAAC;AAC7C;;;;;;;;;GASG;AACH,MAAM,UAAU,SAAS;IAAC,oBAAuB;SAAvB,UAAuB,EAAvB,qBAAuB,EAAvB,IAAuB;QAAvB,+BAAuB;;IAC/C,OAAO,UAAC,SAAc;QACpB,SAAS,CAAC,IAAI,CAAC,OAAO,CAAC,GAAG,UAAU,CAAC;IACvC,CAAC,CAAC;AACJ,CAAC"}

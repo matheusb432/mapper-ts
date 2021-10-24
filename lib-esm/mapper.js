@@ -1,32 +1,54 @@
+import { MapData } from './models/map-data';
+import { Maps } from './models/maps.enum';
 /**
+ * @version 1.1.0
+ * @since 0.1.0
+ *
  * @class Mapper class that can be instantiated and return a mapped object using map() as long as it's properly decorated
- * @property {propertyMapping} -- data with all properties that need name mapping from source to destination
- * @property {entityMapping} -- data with all properties that need type mapping from source to destination
- * @property {destination} -- property that will have the source data mapped to it
+ * @property {destination} destination that will have the source data mapped to it
+ * @property {mapData} mapData Object with all constructor data needed to map source to destination
  */
 var Mapper = /** @class */ (function () {
     function Mapper(type) {
         this.mappedKeys = [];
         this.destination = new type();
-        this.propertyMapping = this.destination.constructor.propertyMap;
-        this.entityMapping = this.destination.constructor.entityMap;
+        this.mapData = this._getMapData();
     }
     /**
-     * map() function to map the source object to the destination object
+     * @version 1.1.0
+     * @since 0.1.0
+     *
+     * Method to map the source object to the destination object
+     * @function map
      * @param source The object to map
      * @returns A mapped object of the given type
      */
     Mapper.prototype.map = function (source) {
+        var _a;
         if (!this.isMappable())
             return source;
         if (this.isEmptySource(source))
             return null;
-        this.mapKeys(source);
+        var sourceData;
+        if (((_a = this.mapData.ignoredMaps) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+            sourceData = Object.assign({}, source);
+            this.ignoreKeys(sourceData);
+        }
+        this.mapKeys(sourceData !== null && sourceData !== void 0 ? sourceData : source);
         this.mapNestedObjects();
         return this.destination;
     };
+    Mapper.prototype.ignoreKeys = function (sourceData) {
+        for (var _i = 0, _a = this.mapData.ignoredMaps; _i < _a.length; _i++) {
+            var key = _a[_i];
+            this.removeKey(sourceData, key);
+        }
+    };
+    Mapper.prototype.removeKey = function (source, key) {
+        delete source[key];
+    };
     Mapper.prototype.mapKeys = function (source) {
-        if (this.propertyMapping != null) {
+        if (this.mapData.propertyMaps != null) {
             this.setMappedKeys(source);
         }
         this.setUnmappedKeys(source);
@@ -34,7 +56,7 @@ var Mapper = /** @class */ (function () {
     Mapper.prototype.setMappedKeys = function (source) {
         var _this = this;
         Object.keys(this.destination).forEach(function (key) {
-            var mappedKey = _this.propertyMapping[key];
+            var mappedKey = _this.mapData.propertyMaps[key];
             if (mappedKey) {
                 _this.mappedKeys.push(mappedKey);
                 _this.destination[key] = source[mappedKey];
@@ -46,14 +68,15 @@ var Mapper = /** @class */ (function () {
     };
     Mapper.prototype.setUnmappedKeys = function (source) {
         var _this = this;
-        if (this.propertyMapping != null) {
+        if (this.mapData.propertyMaps != null) {
+            var destinationKeys_1 = Object.keys(this.destination);
             Object.keys(source).forEach(function (key) {
                 if (_this.shouldSkipMappedKey(key)) {
                     return;
                 }
-                var destinationKeys = Object.keys(_this.destination);
-                if (!destinationKeys.includes(key)) {
+                if (!destinationKeys_1.includes(key)) {
                     _this.destination[key] = source[key];
+                    destinationKeys_1.push(key);
                 }
             });
         }
@@ -65,9 +88,9 @@ var Mapper = /** @class */ (function () {
     };
     Mapper.prototype.mapNestedObjects = function () {
         var _this = this;
-        if (this.entityMapping != null) {
-            Object.keys(this.entityMapping).forEach(function (key) {
-                var mappedKey = _this.entityMapping[key];
+        if (this.mapData.objectMaps != null) {
+            Object.keys(this.mapData.objectMaps).forEach(function (key) {
+                var mappedKey = _this.mapData.objectMaps[key];
                 if (mappedKey) {
                     if (Array.isArray(_this.destination[key])) {
                         _this.destination[key] = _this.destination[key].map(function (x) {
@@ -81,14 +104,23 @@ var Mapper = /** @class */ (function () {
             });
         }
     };
+    Mapper.prototype.isIgnoredKey = function (key) {
+        var _a;
+        return (_a = this.mapData.ignoredMaps) === null || _a === void 0 ? void 0 : _a.includes(key);
+    };
     Mapper.prototype.shouldSkipMappedKey = function (key) {
         return this.mappedKeys.includes(key);
     };
     Mapper.prototype.isMappable = function () {
-        return this.propertyMapping != null || this.entityMapping != null;
+        var _a;
+        return (_a = Object.values(this.mapData)) === null || _a === void 0 ? void 0 : _a.some(function (md) { return md != null; });
     };
     Mapper.prototype.isEmptySource = function (source) {
         return source == null || source.length === 0;
+    };
+    Mapper.prototype._getMapData = function () {
+        var ctor = this.destination.constructor;
+        return new MapData(ctor[Maps.Property], ctor[Maps.Object], ctor[Maps.Ignored]);
     };
     return Mapper;
 }());
