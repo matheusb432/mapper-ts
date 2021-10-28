@@ -1,6 +1,6 @@
 {
   "name": "mapper-ts",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A convention-based object mapper that utilizes TypeScript decorators to simplify the mapping of objects between themselves.",
   "main": "index.ts",
   "homepage": "https://github.com/matheusb432/mapper-ts",

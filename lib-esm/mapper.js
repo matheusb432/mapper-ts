@@ -13,7 +13,7 @@ var Mapper = /** @class */ (function () {
         this.mappedKeys = [];
         this.destination = new type();
         this.mapData = this._getMapData();
-        this._initDestinationProps(type);
+        this._initDestinationProps();
     }
     /**
      * @version 1.1.0
@@ -123,10 +123,12 @@ var Mapper = /** @class */ (function () {
         var ctor = this.destination.constructor;
         return new MapData(ctor[Maps.Property], ctor[Maps.Object], ctor[Maps.Ignored]);
     };
-    Mapper.prototype._initDestinationProps = function (type) {
-        for (var _i = 0, _a = Object.keys(this.mapData.propertyMaps); _i < _a.length; _i++) {
-            var prop = _a[_i];
-            this.destination[prop] = undefined;
+    Mapper.prototype._initDestinationProps = function () {
+        if (this.mapData.propertyMaps != null) {
+            for (var _i = 0, _a = Object.keys(this.mapData.propertyMaps); _i < _a.length; _i++) {
+                var prop = _a[_i];
+                this.destination[prop] = undefined;
+            }
         }
     };
     return Mapper;
