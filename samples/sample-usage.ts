@@ -21,27 +21,36 @@ class BClass {
   unmappedProp1B: number;
   unmappedProp2B: string;
 
-  constructor(prop1B: string, prop2B: number) {
-    this.prop1B = prop1B;
-    this.prop2B = prop2B;
-  }
+  @AddMap(AClass)
+  propAClass: AClass;
 }
 
 @IgnoreMap('ignoredObj', 'ignoredProp', 'nonexistantProp')
 class CClass {
   @AddMap('prop1A')
-  prop1C: string = undefined;
+  prop1C: string;
   @AddMap('prop2A')
-  prop2C: number = undefined;
+  prop2C: number;
+
+  @AddMap(BClass, 'anyPropName')
+  propBClass: BClass;
+}
+
+class DClass {
+  @AddMap('mapMe1')
+  prop1D: string;
+  @AddMap('mapMe2')
+  prop2D: number;
+  @AddMap('mapMe3')
+  prop3D: string;
+  @AddMap('mapMe4')
+  prop4D: number;
+
+  @AddMap(CClass, 'cClassInD')
+  propCD: CClass;
 
   @AddMap(BClass)
-  propBClass: BClass;
-
-  constructor(prop1C?: string, prop2C?: number, propBClass?: BClass) {
-    this.prop1C = prop1C;
-    this.prop2C = prop2C;
-    this.propBClass = propBClass;
-  }
+  propBDList: BClass[];
 }
 
 const unmappedA = { prop1B: 'PROP 1B', prop2B: 10 };
@@ -51,11 +60,12 @@ const unmappedB = {
   prop2A: 10,
   unmappedProp1B: 20,
   unmappedProp2B: 'UNMAPPED 2B',
+  propAClass: { prop1B: 'PROP 1B in A', prop2B: 300 },
 };
 const unmappedC = {
   prop1A: 'PROP 1A',
   prop2A: 20,
-  propBClass: {
+  anyPropName: {
     prop1A: 'PROP 1A in C',
     prop2A: 20,
     unmappedProp1B: 20,
@@ -68,10 +78,20 @@ const unmappedC = {
   ignoredProp: 'IGNORED PROP',
 };
 
+const unmappedD = {
+  mapMe1: 'hey',
+  mapMe2: 10,
+  cClassInD: unmappedC,
+  propBDList: [
+    unmappedB,
+    { ...unmappedB, prop1A: 'different value', unmappedProp1B: 'changed unmapped prop' },
+    { ...unmappedB, prop2A: 150, unmappedProp2B: 'other changed unmapped prop' },
+  ],
+};
+
 const mappedA = new Mapper(AClass).map(unmappedA);
 const mappedB = new Mapper(BClass).map(unmappedB);
 const mappedC = new Mapper(CClass).map(unmappedC);
+const mappedD = new Mapper(DClass).map(unmappedD);
 
-console.log(mappedA);
-console.log(mappedB);
-console.log(mappedC);
+[mappedA, mappedB, mappedC, mappedD].forEach((mappedObject) => console.log(mappedObject));

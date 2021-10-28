@@ -1,6 +1,6 @@
 import { MapData } from './models/map-data';
 /**
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.1.0
  *
  * @class Mapper class that can be instantiated and return a mapped object using map() as long as it's properly decorated
@@ -47,4 +47,5 @@ export declare class Mapper<TDestination> {
         [x: string]: any;
     }): boolean;
     private _getMapData;
+    private _initDestinationProps;
 }

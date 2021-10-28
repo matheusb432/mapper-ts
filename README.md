@@ -15,8 +15,22 @@ import { Mapper, AddMap, IgnoreMap } from 'mapper-ts/lib-esm';
 ### Mapping properties in a class
 
 ```js
-class BClass {
+class AClass {
   `# Mapping a property by name`
+  @AddMap('prop1B')
+  prop1A: string;
+  @AddMap('prop2B')
+  prop2A: number;
+
+  constructor(prop1A: string, prop2A: number) {
+    this.prop1A = prop1A;
+    this.prop2A = prop2A;
+  }
+}
+```
+
+```js
+class BClass {
   @AddMap('prop1A')
   prop1B: string;
   @AddMap('prop2A')
@@ -26,11 +40,9 @@ class BClass {
   unmappedProp1B: number;
   unmappedProp2B: string;
 
-  `# Properties need to be initialized, even if their initial value can be null / undefined`
-  constructor(prop1B: string, prop2B?: number) {
-    this.prop1B = prop1B;
-    this.prop2B = prop2B;
-  }
+  `# Mapping an object property by passing it's type`
+  @AddMap(AClass)
+  propAClass: AClass;
 }
 ```
 
@@ -43,36 +55,29 @@ class CClass {
   @AddMap('prop2A')
   prop2C: number;
 
-  `# Mapping an object property by passing it's type`
-  @AddMap(BClass)
+  `# Also valid if an object's property name also needs to be mapped`
+  @AddMap(BClass, 'anyPropName')
   propBClass: BClass;
-
-  `# Also valid if an object property's name also needs to be mapped`
-  @AddMap('anyPropName',BClass)
-  propBClass: BClass;
-
-  constructor(prop1C?: string, prop2C?: number, propBClass?: BClass) {
-    this.prop1C = prop1C;
-    this.prop2C = prop2C;
-    this.propBClass = propBClass;
-  }
 }
 ```
 
 ### Calling the Mapper.map() method
 
 ```js
-const mappedB = new Mapper(BClass).map({
+const unmappedA = { prop1B: 'PROP 1B', prop2B: 10 };
+
+const unmappedB = {
   prop1A: 'PROP 1B',
   prop2A: 10,
   unmappedProp1B: 20,
   unmappedProp2B: 'UNMAPPED 2B',
-});
+  propAClass:  { prop1B: 'PROP 1B in A', prop2B: 300 };
+};
 
 const unmappedC = {
   prop1A: 'PROP 1A',
   prop2A: 20,
-  propBBClass: {
+  anyPropName: {
     prop1A: 'PROP 1A in C',
     prop2A: 20,
     unmappedProp1B: 20,
@@ -85,28 +90,33 @@ const unmappedC = {
   ignoredProp: 'IGNORED PROP',
 };
 
+
+const mappedA = new Mapper(AClass).map(unmappedA);
+
+const mappedB = new Mapper(BClass).map(unmappedB);
+
 const mappedC = new Mapper(CClass).map(unmappedC);
 ```
 
 ```js
 # Results:
-mappedA = AClass { prop1A: 'PROP 1B', prop2A: 10 }
-
-mappedB = BClass {
+AClass { prop1A: 'PROP 1B', prop2A: 10 }
+BClass {
   prop1B: 'PROP 1B',
   prop2B: 10,
   unmappedProp1B: 20,
-  unmappedProp2B: 'UNMAPPED 2B'
+  unmappedProp2B: 'UNMAPPED 2B',
+  propAClass: AClass { prop1A: 'PROP 1B in A', prop2A: 300 }
 }
-
-mappedC = CClass {
+CClass {
   prop1C: 'PROP 1A',
   prop2C: 20,
   propBClass: BClass {
     prop1B: 'PROP 1A in C',
     prop2B: 20,
     unmappedProp1B: 20,
-    unmappedProp2B: 'UNMAPPED 2B in C'
+    unmappedProp2B: 'UNMAPPED 2B in C',
+    propAClass: null
   }
 }
 ```

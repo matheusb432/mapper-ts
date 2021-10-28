@@ -2,7 +2,7 @@ import { MapData } from './models/map-data';
 import { Maps } from './models/maps.enum';
 
 /**
- * @version 1.1.0
+ * @version 1.1.1
  * @since 0.1.0
  *
  * @class Mapper class that can be instantiated and return a mapped object using map() as long as it's properly decorated
@@ -18,6 +18,8 @@ export class Mapper<TDestination> {
     this.destination = new type();
 
     this.mapData = this._getMapData();
+
+    this._initDestinationProps(type);
   }
 
   /**
@@ -140,5 +142,11 @@ export class Mapper<TDestination> {
     const ctor = this.destination.constructor;
 
     return new MapData(ctor[Maps.Property], ctor[Maps.Object], ctor[Maps.Ignored]);
+  }
+
+  private _initDestinationProps(type: new (...args: any[]) => TDestination): void {
+    for (const prop of Object.keys(this.mapData.propertyMaps)) {
+      this.destination[prop] = undefined;
+    }
   }
 }
