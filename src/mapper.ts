@@ -1,7 +1,7 @@
 import { MapData, Maps, SourceType, ConstructorFunction } from './types';
 
 /**
- * @version 1.2.0
+ * @version 1.2.1
  * @since 0.1.0
  *
  * @class Mapper class that can be instantiated and return a mapped object using map() as long as it's properly decorated
@@ -27,11 +27,10 @@ export class Mapper<TDestination> {
   }
 
   /**
-   * @version 1.2.0
+   * @version 1.2.1
    * @since 0.1.0
    *
    * Method to map the source object to the destination object
-   * @function map
    * @param source The object to map
    * @returns A mapped object of the given type
    */
@@ -42,9 +41,13 @@ export class Mapper<TDestination> {
       ) as TDestination[];
     }
 
-    if (!this.isMappable()) return source;
+    if (source && !this.isMappable()) {
+      this.setUnmappedKeys(source);
 
-    if (this.isEmptySource(source)) return null;
+      return this.destination;
+    }
+
+    if (!source) return source;
 
     let sourceData: SourceType;
 
@@ -118,15 +121,16 @@ export class Mapper<TDestination> {
   mapNestedObjects(): void {
     if (this.mapData.objectMaps != null) {
       Object.keys(this.mapData.objectMaps).forEach((key) => {
-        const mappedKey = this.mapData.objectMaps[key];
-        if (mappedKey) {
-          if (Array.isArray(this.destination[key])) {
-            this.destination[key] = this.destination[key].map((x: SourceType) =>
-              new Mapper(mappedKey).map(x)
-            );
-          } else {
-            this.destination[key] = new Mapper(mappedKey).map(this.destination[key]);
-          }
+        const classType = this.mapData.objectMaps[key];
+
+        if (!classType) return;
+
+        if (Array.isArray(this.destination[key])) {
+          this.destination[key] = this.destination[key].map((destPropObj: SourceType) =>
+            new Mapper(classType).map(destPropObj)
+          );
+        } else {
+          this.destination[key] = new Mapper(classType).map(this.destination[key]);
         }
       });
     }
@@ -140,12 +144,8 @@ export class Mapper<TDestination> {
     return this.mappedKeys.includes(key);
   }
 
-  isMappable(source?: SourceType): boolean {
+  isMappable(): boolean {
     return Object.values(this.mapData)?.some((md) => md != null);
-  }
-
-  isEmptySource(source: SourceType): boolean {
-    return source == null;
   }
 
   private _getMapData() {

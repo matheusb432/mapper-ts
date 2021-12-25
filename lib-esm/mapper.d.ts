@@ -1,6 +1,6 @@
 import { MapData, SourceType, ConstructorFunction } from './types';
 /**
- * @version 1.2.0
+ * @version 1.2.1
  * @since 0.1.0
  *
  * @class Mapper class that can be instantiated and return a mapped object using map() as long as it's properly decorated
@@ -16,11 +16,10 @@ export declare class Mapper<TDestination> {
     ctorType: ConstructorFunction<TDestination>;
     constructor(type: ConstructorFunction<TDestination>);
     /**
-     * @version 1.2.0
+     * @version 1.2.1
      * @since 0.1.0
      *
      * Method to map the source object to the destination object
-     * @function map
      * @param source The object to map
      * @returns A mapped object of the given type
      */
@@ -33,8 +32,7 @@ export declare class Mapper<TDestination> {
     mapNestedObjects(): void;
     isIgnoredKey(key: string): boolean;
     shouldSkipMappedKey(key: string): boolean;
-    isMappable(source?: SourceType): boolean;
-    isEmptySource(source: SourceType): boolean;
+    isMappable(): boolean;
     private _getMapData;
     private _initDestinationProps;
 }

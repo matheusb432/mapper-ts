@@ -1,6 +1,6 @@
 import { MapData, Maps } from './types';
 /**
- * @version 1.2.0
+ * @version 1.2.1
  * @since 0.1.0
  *
  * @class Mapper class that can be instantiated and return a mapped object using map() as long as it's properly decorated
@@ -18,11 +18,10 @@ export class Mapper {
         this._initDestinationProps();
     }
     /**
-     * @version 1.2.0
+     * @version 1.2.1
      * @since 0.1.0
      *
      * Method to map the source object to the destination object
-     * @function map
      * @param source The object to map
      * @returns A mapped object of the given type
      */
@@ -31,10 +30,12 @@ export class Mapper {
         if (Array.isArray(source)) {
             return source.map((sourceObj) => new Mapper(this.ctorType).map(sourceObj));
         }
-        if (!this.isMappable())
+        if (source && !this.isMappable()) {
+            this.setUnmappedKeys(source);
+            return this.destination;
+        }
+        if (!source)
             return source;
-        if (this.isEmptySource(source))
-            return null;
         let sourceData;
         if (((_a = this.mapData.ignoredMaps) === null || _a === void 0 ? void 0 : _a.length) > 0) {
             sourceData = Object.assign({}, source);
@@ -92,14 +93,14 @@ export class Mapper {
     mapNestedObjects() {
         if (this.mapData.objectMaps != null) {
             Object.keys(this.mapData.objectMaps).forEach((key) => {
-                const mappedKey = this.mapData.objectMaps[key];
-                if (mappedKey) {
-                    if (Array.isArray(this.destination[key])) {
-                        this.destination[key] = this.destination[key].map((x) => new Mapper(mappedKey).map(x));
-                    }
-                    else {
-                        this.destination[key] = new Mapper(mappedKey).map(this.destination[key]);
-                    }
+                const classType = this.mapData.objectMaps[key];
+                if (!classType)
+                    return;
+                if (Array.isArray(this.destination[key])) {
+                    this.destination[key] = this.destination[key].map((destPropObj) => new Mapper(classType).map(destPropObj));
+                }
+                else {
+                    this.destination[key] = new Mapper(classType).map(this.destination[key]);
                 }
             });
         }
@@ -111,12 +112,9 @@ export class Mapper {
     shouldSkipMappedKey(key) {
         return this.mappedKeys.includes(key);
     }
-    isMappable(source) {
+    isMappable() {
         var _a;
         return (_a = Object.values(this.mapData)) === null || _a === void 0 ? void 0 : _a.some((md) => md != null);
-    }
-    isEmptySource(source) {
-        return source == null;
     }
     _getMapData() {
         const ctor = this.destination.constructor;

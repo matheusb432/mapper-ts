@@ -53,7 +53,7 @@ class DClass {
   propBDList: BClass[];
 }
 
-// ? Unmapped classes when mapped just return the source object.
+// ? Classes without a mapping configuration will return an object of the class type.
 class EClass {
   prop1E: string;
   prop2E: string;
@@ -108,4 +108,6 @@ const mappedC = new Mapper(CClass).map(unmappedC);
 const mappedD = new Mapper(DClass).map(unmappedD);
 const mappedE = new Mapper(EClass).map(unmappedE);
 
-[mappedA, mappedB, mappedC, mappedD, mappedE].forEach((mappedObject) => console.log(mappedObject));
+[mappedA, mappedB, mappedC, mappedD, mappedE].forEach((mappedObject) =>
+  console.log(mappedObject)
+);
