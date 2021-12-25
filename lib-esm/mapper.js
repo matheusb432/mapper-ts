@@ -1,21 +1,24 @@
 import { MapData, Maps } from './types';
 /**
- * @version 1.1.3
+ * @version 1.2.0
  * @since 0.1.0
  *
  * @class Mapper class that can be instantiated and return a mapped object using map() as long as it's properly decorated
  * @property {destination} destination that will have the source data mapped to it
  * @property {mapData} mapData Object with all constructor data needed to map source to destination
+ * @property {mappedKeys} mappedKeys Array that keeps track of all prop keys that have already been mapped
+ * @property {ctorType} ctorType Property that will hold the constructor function type of the destination object
  */
 export class Mapper {
     constructor(type) {
         this.mappedKeys = [];
-        this.destination = new type();
+        this.ctorType = type;
+        this.destination = new this.ctorType();
         this.mapData = this._getMapData();
         this._initDestinationProps();
     }
     /**
-     * @version 1.1.0
+     * @version 1.2.0
      * @since 0.1.0
      *
      * Method to map the source object to the destination object
@@ -25,7 +28,10 @@ export class Mapper {
      */
     map(source) {
         var _a;
-        if (!this.isMappable() || Array.isArray(source))
+        if (Array.isArray(source)) {
+            return source.map((sourceObj) => new Mapper(this.ctorType).map(sourceObj));
+        }
+        if (!this.isMappable())
             return source;
         if (this.isEmptySource(source))
             return null;
