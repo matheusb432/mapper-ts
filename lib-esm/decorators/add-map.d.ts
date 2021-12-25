@@ -1,5 +1,5 @@
 /**
- * @version 1.1.0
+ * @version 1.1.3
  * @since 0.1.0
  *
  * Mapping decorator to apply to a property

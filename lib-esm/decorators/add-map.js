@@ -1,6 +1,6 @@
-import { Maps } from './../models/maps.enum';
+import { Maps } from '../types/maps.enum';
 /**
- * @version 1.1.0
+ * @version 1.1.3
  * @since 0.1.0
  *
  * Mapping decorator to apply to a property
@@ -8,14 +8,9 @@ import { Maps } from './../models/maps.enum';
  * @param sourceData Data that should contain one of or both of the property name and entity type to map
  * @returns An object with a new constructor property to allow for it's mapping with the Mapper class
  */
-export function AddMap() {
-    var sourceData = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        sourceData[_i] = arguments[_i];
-    }
-    return function (destination, key) {
-        for (var _i = 0, sourceData_1 = sourceData; _i < sourceData_1.length; _i++) {
-            var data = sourceData_1[_i];
+export function AddMap(...sourceData) {
+    return (destination, key) => {
+        for (const data of sourceData) {
             if (typeof data === 'string') {
                 addPropertyMap(destination, key, data);
             }

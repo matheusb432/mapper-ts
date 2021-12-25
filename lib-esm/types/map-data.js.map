@@ -1,0 +1,1 @@
+{"version":3,"file":"map-data.js","sourceRoot":"","sources":["../../src/types/map-data.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,MAAM,OAAO,OAAO;IAClB,YACS,YAAuC,EACvC,UAA0D,EAC1D,WAAqB;QAFrB,iBAAY,GAAZ,YAAY,CAA2B;QACvC,eAAU,GAAV,UAAU,CAAgD;QAC1D,gBAAW,GAAX,WAAW,CAAU;IAC3B,CAAC;CACL"}

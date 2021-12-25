@@ -1,5 +1,5 @@
 /**
- * @version 1.1.0
+ * @version 1.1.3
  * @since 1.1.0
  *
  * Class decorator to ignore any properties contained in it's parameters.

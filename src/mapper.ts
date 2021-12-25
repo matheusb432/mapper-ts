@@ -1,8 +1,7 @@
-import { MapData } from './models/map-data';
-import { Maps } from './models/maps.enum';
+import { MapData, Maps, SourceType, ConstructorFunction } from './types';
 
 /**
- * @version 1.1.2
+ * @version 1.1.3
  * @since 0.1.0
  *
  * @class Mapper class that can be instantiated and return a mapped object using map() as long as it's properly decorated
@@ -14,7 +13,7 @@ export class Mapper<TDestination> {
   mapData: MapData;
   mappedKeys: string[] = [];
 
-  constructor(type: new (...args: any[]) => TDestination) {
+  constructor(type: ConstructorFunction<TDestination>) {
     this.destination = new type();
 
     this.mapData = this._getMapData();
@@ -31,12 +30,12 @@ export class Mapper<TDestination> {
    * @param source The object to map
    * @returns A mapped object of the given type
    */
-  map(source: { [x: string]: any }): any {
-    if (!this.isMappable()) return source;
+  map(source: SourceType | SourceType[]): any {
+    if (!this.isMappable() || Array.isArray(source)) return source;
 
     if (this.isEmptySource(source)) return null;
 
-    let sourceData;
+    let sourceData: SourceType;
 
     if (this.mapData.ignoredMaps?.length > 0) {
       sourceData = Object.assign({}, source);
@@ -51,17 +50,17 @@ export class Mapper<TDestination> {
     return this.destination;
   }
 
-  ignoreKeys(sourceData: { [x: string]: any }) {
+  ignoreKeys(sourceData: SourceType) {
     for (const key of this.mapData.ignoredMaps) {
       this.removeKey(sourceData, key);
     }
   }
 
-  removeKey(source: { [x: string]: any }, key: string): void {
+  removeKey(source: SourceType, key: string): void {
     delete source[key];
   }
 
-  mapKeys(source: { [x: string]: any }): void {
+  mapKeys(source: SourceType): void {
     if (this.mapData.propertyMaps != null) {
       this.setMappedKeys(source);
     }
@@ -69,7 +68,7 @@ export class Mapper<TDestination> {
     this.setUnmappedKeys(source);
   }
 
-  setMappedKeys(source: { [x: string]: any }): void {
+  setMappedKeys(source: SourceType): void {
     Object.keys(this.destination).forEach((key) => {
       const mappedKey = this.mapData.propertyMaps[key];
 
@@ -83,7 +82,7 @@ export class Mapper<TDestination> {
     });
   }
 
-  setUnmappedKeys(source: { [x: string]: any }): void {
+  setUnmappedKeys(source: SourceType): void {
     if (this.mapData.propertyMaps != null) {
       let destinationKeys = Object.keys(this.destination);
 
@@ -111,7 +110,7 @@ export class Mapper<TDestination> {
         const mappedKey = this.mapData.objectMaps[key];
         if (mappedKey) {
           if (Array.isArray(this.destination[key])) {
-            this.destination[key] = this.destination[key].map((x: { [x: string]: any }) =>
+            this.destination[key] = this.destination[key].map((x: SourceType) =>
               new Mapper(mappedKey).map(x)
             );
           } else {
@@ -130,12 +129,12 @@ export class Mapper<TDestination> {
     return this.mappedKeys.includes(key);
   }
 
-  isMappable(): boolean {
+  isMappable(source?: SourceType): boolean {
     return Object.values(this.mapData)?.some((md) => md != null);
   }
 
-  isEmptySource(source: { [x: string]: any }): boolean {
-    return source == null || source.length === 0;
+  isEmptySource(source: SourceType): boolean {
+    return source == null;
   }
 
   private _getMapData() {

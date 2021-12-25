@@ -1,6 +1,6 @@
-import { Maps } from './../models/maps.enum';
+import { Maps } from '../types/maps.enum';
 /**
- * @version 1.1.0
+ * @version 1.1.3
  * @since 1.1.0
  *
  * Class decorator to ignore any properties contained in it's parameters.
@@ -9,12 +9,8 @@ import { Maps } from './../models/maps.enum';
  * the destination object.
  * @returns A modified class constructor with an added ignoredMap array of properties to ignore
  */
-export function IgnoreMap() {
-    var ignoredMap = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        ignoredMap[_i] = arguments[_i];
-    }
-    return function (classCtor) {
+export function IgnoreMap(...ignoredMap) {
+    return (classCtor) => {
         classCtor[Maps.Ignored] = ignoredMap;
     };
 }

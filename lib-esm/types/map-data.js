@@ -5,13 +5,11 @@
  * MapData class to store all constructor maps of a destination object
  * @class
  */
-var MapData = /** @class */ (function () {
-    function MapData(propertyMaps, objectMaps, ignoredMaps) {
+export class MapData {
+    constructor(propertyMaps, objectMaps, ignoredMaps) {
         this.propertyMaps = propertyMaps;
         this.objectMaps = objectMaps;
         this.ignoredMaps = ignoredMaps;
     }
-    return MapData;
-}());
-export { MapData };
+}
 //# sourceMappingURL=map-data.js.map
