@@ -16,7 +16,7 @@ import { Mapper, AddMap, IgnoreMap } from 'mapper-ts/lib-esm';
 
 ```js
 class AClass {
-  `# Mapping a property by name`
+  // Mapping a property by name
   @AddMap('prop1B')
   prop1A: string;
   @AddMap('prop2B')
@@ -36,18 +36,18 @@ class BClass {
   @AddMap('prop2A')
   prop2B: number;
 
-  `# Any properties that don't need to be mapped simply shouldn't have the @AddMap() decorator.`
+  // Any properties that don't need to be mapped simply shouldn't have the @AddMap() decorator.
   unmappedProp1B: number;
   unmappedProp2B: string;
 
-  `# Mapping an object property by passing it's type`
+  // Mapping an object property by passing it's type
   @AddMap(AClass)
   propAClass: AClass;
 }
 ```
 
 ```js
-`# Any property name in @IgnoreMap() will be ignored from the source object if it exists in it`
+// Any property name in @IgnoreMap() will be ignored from the source object if it exists in it
 @IgnoreMap('ignoredObj', 'ignoredProp', 'nonexistantProp')
 class CClass {
   @AddMap('prop1A')
@@ -55,7 +55,7 @@ class CClass {
   @AddMap('prop2A')
   prop2C: number;
 
-  `# Also valid if an object's property name also needs to be mapped`
+  // Also valid if an object's property name also needs to be mapped
   @AddMap(BClass, 'anyPropName')
   propBClass: BClass;
 }
@@ -120,3 +120,13 @@ CClass {
   }
 }
 ```
+
+## Compiling the source code to JS files
+
+- To compile all the code in the `src` folder to the `lib-esm` folder, run this command at the root of the project with typescript installed:
+
+```lang-bash
+tsc
+```
+
+- All configuration for this command is already set in `tsconfig.json`
