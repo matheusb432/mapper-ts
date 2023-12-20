@@ -9,8 +9,11 @@
     "rootDir": "src",
     "experimentalDecorators": true,
     "sourceMap": true,
+    "types": ["jest"],
     "declaration": true,
+    "esModuleInterop": true,
     "moduleResolution": "node"
   },
-  "exclude": ["lib-esm", "samples"]
+  "ts-node": { "esm": true, "experimentalSpecifierResolution": "node" },
+  "exclude": ["lib-esm", "examples"]
 }

@@ -1,13 +1,12 @@
 # mapper-ts
 
-- This package is a simple automapper where you can use decorators to map objects.
+A convention-based object mapper that utilizes TypeScript decorators to simplify the mapping of objects between themselves.
 
 ## Usage
 
 ```js
-
-# importing modules
-import { Mapper, AddMap, IgnoreMap } from 'mapper-ts/lib-esm';
+// importing modules
+import { Mapper, AddMap, IgnoreMap } from 'mapper-ts';
 ```
 
 ## Examples

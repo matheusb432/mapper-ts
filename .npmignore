@@ -2,5 +2,6 @@
 **/tsconfig.json
 **/webpack.config.js
 node_modules
-samples
+examples
 src
+jest.config.json
