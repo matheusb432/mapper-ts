@@ -1,4 +1,4 @@
-import { MapData, SourceType, ConstructorFunction } from './types';
+import { ConstructorFunction } from './types';
 /**
  * @version 1.2.1
  * @since 0.1.0
@@ -10,29 +10,24 @@ import { MapData, SourceType, ConstructorFunction } from './types';
  * @property {ctorType} ctorType Property that will hold the constructor function type of the destination object
  */
 export declare class Mapper<TDestination> {
-    destination: TDestination;
-    mapData: MapData;
-    mappedKeys: string[];
-    ctorType: ConstructorFunction<TDestination>;
+    private destination;
+    private mapData;
+    private mappedKeys;
+    private ctorType;
     constructor(type: ConstructorFunction<TDestination>);
-    /**
-     * @version 1.2.1
-     * @since 0.1.0
-     *
-     * Method to map the source object to the destination object
-     * @param source The object to map
-     * @returns A mapped object of the given type
-     */
-    map(source: SourceType | SourceType[]): TDestination | TDestination[] | SourceType;
-    ignoreKeys(sourceData: SourceType): void;
-    removeKey(source: SourceType, key: string): void;
-    mapKeys(source: SourceType): void;
-    setMappedKeys(source: SourceType): void;
-    setUnmappedKeys(source: SourceType): void;
-    mapNestedObjects(): void;
+    map<TSource extends object>(source: TSource[]): TDestination[];
+    map<TSource extends object>(source: TSource): TDestination;
+    map<TSource extends object>(source: null): null;
+    map<TSource extends object>(source: undefined): undefined;
+    ignoreKeys<TSource extends object>(sourceData: TSource): void;
+    removeKey<TSource extends object>(source: TSource, key: string): void;
+    mapKeys<TSource extends object>(source: TSource): void;
+    setMappedKeys<TSource extends object>(source: TSource): void;
+    setUnmappedKeys<TSource extends object>(source: TSource): void;
+    mapNestedObjects<TSource extends object>(): void;
     isIgnoredKey(key: string): boolean;
     shouldSkipMappedKey(key: string): boolean;
-    isMappable(): boolean;
-    private _getMapData;
-    private _initDestinationProps;
+    hasAnyMapConfig(): boolean;
+    private getMapData;
+    private initDestinationProps;
 }

@@ -14,8 +14,8 @@ export class Mapper {
         this.mappedKeys = [];
         this.ctorType = type;
         this.destination = new this.ctorType();
-        this.mapData = this._getMapData();
-        this._initDestinationProps();
+        this.mapData = this.getMapData();
+        this.initDestinationProps();
     }
     /**
      * @version 1.2.1
@@ -30,7 +30,7 @@ export class Mapper {
         if (Array.isArray(source)) {
             return source.map((sourceObj) => new Mapper(this.ctorType).map(sourceObj));
         }
-        if (source && !this.isMappable()) {
+        if (source && !this.hasAnyMapConfig()) {
             this.setUnmappedKeys(source);
             return this.destination;
         }
@@ -112,15 +112,16 @@ export class Mapper {
     shouldSkipMappedKey(key) {
         return this.mappedKeys.includes(key);
     }
-    isMappable() {
-        var _a;
-        return (_a = Object.values(this.mapData)) === null || _a === void 0 ? void 0 : _a.some((md) => md != null);
+    hasAnyMapConfig() {
+        return (this.mapData.propertyMaps != null ||
+            this.mapData.objectMaps != null ||
+            this.mapData.ignoredMaps != null);
     }
-    _getMapData() {
+    getMapData() {
         const ctor = this.destination.constructor;
         return new MapData(ctor[Maps.Property], ctor[Maps.Object], ctor[Maps.Ignored]);
     }
-    _initDestinationProps() {
+    initDestinationProps() {
         if (this.mapData.propertyMaps != null) {
             for (const prop of Object.keys(this.mapData.propertyMaps)) {
                 this.destination[prop] = undefined;

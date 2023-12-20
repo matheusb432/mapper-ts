@@ -4,9 +4,22 @@ A convention-based object mapper that utilizes TypeScript decorators to simplify
 
 ## Usage
 
+Importing modules
+
 ```js
 // importing modules
 import { Mapper, AddMap, IgnoreMap } from 'mapper-ts';
+```
+
+Update tsconfig.json to enable decorators, if not already enabled.
+
+```json
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    // ...
+  }
+}
 ```
 
 ## Examples

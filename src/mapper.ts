@@ -11,20 +11,25 @@ import { MapData, Maps, SourceType, ConstructorFunction } from './types';
  * @property {ctorType} ctorType Property that will hold the constructor function type of the destination object
  */
 export class Mapper<TDestination> {
-  destination: TDestination;
-  mapData: MapData;
-  mappedKeys: string[] = [];
-  ctorType: ConstructorFunction<TDestination>;
+  private destination: TDestination;
+  private mapData: MapData;
+  private mappedKeys: string[] = [];
+  private ctorType: ConstructorFunction<TDestination>;
 
   constructor(type: ConstructorFunction<TDestination>) {
     this.ctorType = type;
 
     this.destination = new this.ctorType();
 
-    this.mapData = this._getMapData();
+    this.mapData = this.getMapData();
 
-    this._initDestinationProps();
+    this.initDestinationProps();
   }
+
+  map<TSource extends object>(source: TSource[]): TDestination[];
+  map<TSource extends object>(source: TSource): TDestination;
+  map<TSource extends object>(source: null): null;
+  map<TSource extends object>(source: undefined): undefined;
 
   /**
    * @version 1.2.1
@@ -34,14 +39,14 @@ export class Mapper<TDestination> {
    * @param source The object to map
    * @returns A mapped object of the given type
    */
-  map(source: SourceType | SourceType[]): TDestination | TDestination[] | SourceType {
+  map<TSource extends object>(source: TSource | null | undefined) {
     if (Array.isArray(source)) {
       return source.map((sourceObj) =>
         new Mapper(this.ctorType).map(sourceObj)
       ) as TDestination[];
     }
 
-    if (source && !this.isMappable()) {
+    if (source && !this.hasAnyMapConfig()) {
       this.setUnmappedKeys(source);
 
       return this.destination;
@@ -49,7 +54,7 @@ export class Mapper<TDestination> {
 
     if (!source) return source;
 
-    let sourceData: SourceType;
+    let sourceData: TSource;
 
     if (this.mapData.ignoredMaps?.length > 0) {
       sourceData = Object.assign({}, source);
@@ -64,17 +69,17 @@ export class Mapper<TDestination> {
     return this.destination;
   }
 
-  ignoreKeys(sourceData: SourceType) {
+  ignoreKeys<TSource extends object>(sourceData: TSource) {
     for (const key of this.mapData.ignoredMaps) {
       this.removeKey(sourceData, key);
     }
   }
 
-  removeKey(source: SourceType, key: string): void {
+  removeKey<TSource extends object>(source: TSource, key: string): void {
     delete source[key];
   }
 
-  mapKeys(source: SourceType): void {
+  mapKeys<TSource extends object>(source: TSource): void {
     if (this.mapData.propertyMaps != null) {
       this.setMappedKeys(source);
     }
@@ -82,7 +87,7 @@ export class Mapper<TDestination> {
     this.setUnmappedKeys(source);
   }
 
-  setMappedKeys(source: SourceType): void {
+  setMappedKeys<TSource extends object>(source: TSource): void {
     Object.keys(this.destination).forEach((key) => {
       const mappedKey = this.mapData.propertyMaps[key];
 
@@ -96,7 +101,7 @@ export class Mapper<TDestination> {
     });
   }
 
-  setUnmappedKeys(source: SourceType): void {
+  setUnmappedKeys<TSource extends object>(source: TSource): void {
     if (this.mapData.propertyMaps != null) {
       let destinationKeys = Object.keys(this.destination);
 
@@ -118,7 +123,7 @@ export class Mapper<TDestination> {
     }
   }
 
-  mapNestedObjects(): void {
+  mapNestedObjects<TSource extends object>(): void {
     if (this.mapData.objectMaps != null) {
       Object.keys(this.mapData.objectMaps).forEach((key) => {
         const classType = this.mapData.objectMaps[key];
@@ -126,7 +131,7 @@ export class Mapper<TDestination> {
         if (!classType) return;
 
         if (Array.isArray(this.destination[key])) {
-          this.destination[key] = this.destination[key].map((destPropObj: SourceType) =>
+          this.destination[key] = this.destination[key].map((destPropObj: TSource) =>
             new Mapper(classType).map(destPropObj)
           );
         } else {
@@ -144,17 +149,21 @@ export class Mapper<TDestination> {
     return this.mappedKeys.includes(key);
   }
 
-  isMappable(): boolean {
-    return Object.values(this.mapData)?.some((md) => md != null);
+  hasAnyMapConfig(): boolean {
+    return (
+      this.mapData.propertyMaps != null ||
+      this.mapData.objectMaps != null ||
+      this.mapData.ignoredMaps != null
+    );
   }
 
-  private _getMapData() {
+  private getMapData() {
     const ctor = this.destination.constructor;
 
     return new MapData(ctor[Maps.Property], ctor[Maps.Object], ctor[Maps.Ignored]);
   }
 
-  private _initDestinationProps(): void {
+  private initDestinationProps(): void {
     if (this.mapData.propertyMaps != null) {
       for (const prop of Object.keys(this.mapData.propertyMaps)) {
         this.destination[prop] = undefined;
